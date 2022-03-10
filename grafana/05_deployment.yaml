@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana
+  namespace: monitoring-demo
+  labels:
+    app: grafana
+spec:
+  selector:
+   matchLabels:
+    app: grafana
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: grafana
+    spec:
+      containers:
+        - name: grafana
+          image: "grafana/grafana"
+          ports:
+          - name: grafana
+            containerPort: 3000
+          env:
+          - name: GF_SERVER_HTTP_PORT
+            value: "3000"
+          - name: GF_AUTH_BASIC_ENABLED
+            value: "false"
+          - name: GF_AUTH_ANONYMOUS_ENABLED
+            value: "true"
+          - name: GF_AUTH_ANONYMOUS_ORG_ROLE
+            value: Admin
+          - name: GF_PATHS_DATA
+            value: /data/grafana
+          volumeMounts:
+          - name: grafana-data
+            mountPath: /data/grafana
+          - name: grafana-datasource
+            mountPath: /etc/grafana/provisioning/datasources/datasource.yaml
+            subPath: datasource.yaml
+          - name: grafana-dashboard-provider
+            mountPath: /etc/grafana/provisioning/dashboards/dashboard-provider.yaml
+            subPath: dashboard-provider.yaml
+          - name: grafana-dashboard
+            mountPath: /var/lib/grafana/dashboards
+      securityContext:
+        runAsUser: 0
+        fsGroup: 472      
+      volumes:
+      - name: grafana-data
+        persistentVolumeClaim:
+          claimName: grafana-data
+      - name: grafana-datasource
+        configMap:
+          name: grafana-config
+          items:
+            - key: datasource.yaml
+              path: datasource.yaml
+      - name: grafana-dashboard-provider
+        configMap:
+          name: grafana-config
+          items:
+            - key: dashboard-provider.yaml
+              path: dashboard-provider.yaml
+      - name: grafana-dashboard
+        configMap:
+          name: grafana-dashboard
