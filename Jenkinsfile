@@ -3,7 +3,7 @@ pipeline {
     stages {
 stage ("Kubernetes export") {
             steps {         
-                sh 'aws eks --region eu-west-3 update-kubeconfig --name tasts1'
+                sh 'aws eks --region eu-west-3 update-kubeconfig --name demo'
                                }
                            }
  stage ("Kubernetes Deploy") {
