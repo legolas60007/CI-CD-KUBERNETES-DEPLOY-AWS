@@ -1,11 +1,6 @@
 pipeline {
     agent any
     stages {
-stage ("Kubernetes export") {
-            steps {         
-                sh 'aws eks --region eu-west-3 update-kubeconfig --name demo'
-                               }
-                           }
  stage ("Kubernetes Deploy") {
             steps {         
                 sh 'kubectl apply -f deployment.yaml'
