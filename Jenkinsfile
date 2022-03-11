@@ -6,7 +6,7 @@ stage ("Kubernetes export") {
                 sh 'aws eks --region eu-west-3 update-kubeconfig --name tasts1'
                                }
                            }
- stage ("Kubernetes export") {
+ stage ("Kubernetes Deploy") {
             steps {         
                 sh 'kubectl apply -f deployment.yaml'
                 sh 'kubectl apply -f public-lb.yaml'
